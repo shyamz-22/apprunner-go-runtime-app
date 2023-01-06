@@ -4,7 +4,6 @@ import (
 	"dynamodb-url-shortener/db"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -15,16 +14,13 @@ import (
 
 func main() {
 	router := mux.NewRouter()
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		t := time.Now().Local().UTC()
-		log.Println("root url accessed", t)
-		fmt.Fprintln(w, t)
-		w.WriteHeader(200)
 
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		log.Println("root url accessed", time.Now().Local().UTC())
 	}).Methods(http.MethodGet)
 
-	router.HandleFunc("/", createShortCode).Methods(http.MethodPost)
-	router.HandleFunc("/{shortcode}", accessURLWithShortCode).Methods(http.MethodGet)
+	router.HandleFunc("/app/", createShortCode).Methods(http.MethodPost)
+	router.HandleFunc("/app/{shortcode}", accessURLWithShortCode).Methods(http.MethodGet)
 
 	log.Println("starting server.....")
 	http.ListenAndServe(":8080", router)
