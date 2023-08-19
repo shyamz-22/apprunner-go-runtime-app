@@ -1,0 +1,74 @@
+Description: Resources necessary for running the app
+Service:
+  Type: AWS::AppRunner::Service
+  Properties:
+    ServiceName: pyg-demo
+    SourceConfiguration:
+      AuthenticationConfiguration:
+        ConnectionArn: "arn:aws:apprunner:eu-west-1:276249782737:connection/appRunnerRepo/90a59472060e42599647b3015dc04459"
+      AutoDeploymentsEnabled: true
+      CodeRepository:
+        RepositoryUrl: "https://github.com/shyamz-22/apprunner-go-runtime-app.git"
+        SourceCodeVersion:
+          Type: BRANCH
+          Value: master
+        CodeConfiguration:
+          ConfigurationSource: REPOSITORY
+    InstanceConfiguration:
+      Cpu: 1 vCPU
+      Memory: 2 GB
+
+Resources:
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: urls-new
+      AttributeDefinitions:
+        - AttributeName: shortcode
+          AttributeType: S
+      KeySchema:
+        - AttributeName: shortcode
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      # TimeToLiveSpecification:
+      #   AttributeName: ttl
+      #   Enabled: true
+  
+  Role:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [ 'tasks.apprunner.amazonaws.com' ]
+            Action: [ 'sts:AssumeRole' ]
+      Path: /
+      Policies:
+        - PolicyName: ddb-access
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:BatchGetItem
+                  - dynamodb:Scan
+                  - dynamodb:Query
+                  - dynamodb:ConditionCheckItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:BatchWriteItem
+                  - dynamodb:DeleteItem
+                Resource:
+                  - !GetAtt Table.Arn
+
+Outputs:
+  RoleName:
+    Description: Name of the role created for accessing DynamoDB
+    Value: !Ref Role
+  TableName:
+    Description: DynamoDB table name
+    Value: !Ref Table
+  AppRunnerName:
+    Description: App runner service name
+    Value: !Ref Service

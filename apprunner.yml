@@ -1,0 +1,29 @@
+version: 1.0
+runtime: go 
+build:
+  commands:
+    # pre-build:
+    #   - wget -c https://s3.amazonaws.com/DOC-EXAMPLE-BUCKET/test-lib.tar.gz -O - | tar -xz
+    build:
+      - go test ./...
+    post-build:
+      - go build main.go
+  env:
+    - name: TABLE_NAME
+      value: urls-new
+run:
+  runtime-version: go1.21.0
+  command: ./main
+  network: 
+    port: 8000
+    env: MY_APP_PORT  
+  env:
+    - name: TABLE_NAME
+      value: urls-new
+#  secrets:
+#    - name: my-secret
+#      value-from: "arn:aws:secretsmanager:us-east-1:123456789012:secret:testingstackAppRunnerConstr-kJFXde2ULKbT-S7t8xR:username::"
+#    - name: my-parameter
+#      value-from: "arn:aws:ssm:us-east-1:123456789012:parameter/parameter-name"
+#    - name: my-parameter-only-name
+#      value-from: "parameter-name"

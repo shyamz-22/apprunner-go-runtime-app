@@ -4,7 +4,7 @@ import (
 	"dynamodb-url-shortener/db"
 	"encoding/json"
 	"errors"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"time"
@@ -27,7 +27,7 @@ func main() {
 }
 
 func createShortCode(rw http.ResponseWriter, req *http.Request) {
-	b, err := ioutil.ReadAll(req.Body)
+	b, err := io.ReadAll(req.Body)
 	if err != nil {
 		http.Error(rw, err.Error(), http.StatusBadRequest)
 		return
