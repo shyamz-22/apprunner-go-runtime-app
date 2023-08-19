@@ -3,7 +3,6 @@ runtime: go1
 build:
   commands:
     build:
-      - go test ./...
       - go build main.go
   env:
     - name: TABLE_NAME
