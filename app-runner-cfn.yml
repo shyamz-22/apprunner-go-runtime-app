@@ -69,6 +69,3 @@ Outputs:
   TableName:
     Description: DynamoDB table name
     Value: !Ref Table
-  AppRunnerName:
-    Description: App runner service name
-    Value: !Ref Service
