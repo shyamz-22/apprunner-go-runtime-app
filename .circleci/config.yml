@@ -16,6 +16,8 @@ jobs:
     # A list of available CircleCI docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/go
     docker:
       - image: cimg/go:1.19.2
+        environment:
+          TABLE_NAME: urls-new
     steps:
       # Checkout the code as the first step.
       - checkout
