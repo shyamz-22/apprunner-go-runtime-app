@@ -2,25 +2,36 @@
 # See: https://circleci.com/docs/configuration-reference
 version: 2.1
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/configuration-reference/#jobs
-jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/configuration-reference/#executor-job
-    docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/configuration-reference/#steps
-    steps:
-      - checkout
-      - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
+orbs:
+  # The Go orb contains a set of prepackaged CircleCI configuration you can utilize
+  # Orbs reduce the amount of configuration required for common tasks.
+  # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/go
+  go: circleci/go@1.7.3
 
-# Orchestrate jobs using workflows
-# See: https://circleci.com/docs/configuration-reference/#workflows
+jobs:
+  # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
+  build-and-test:
+    # These next lines define a docker executor: https://circleci.com/docs/executor-types/
+    # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
+    # A list of available CircleCI docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/go
+    docker:
+      - image: cimg/go:1.19.2
+    steps:
+      # Checkout the code as the first step.
+      - checkout
+      - go/load-cache # Load cached Go modules.
+      - go/mod-download # Run 'go mod download'.
+      - go/save-cache # Save Go modules to cache.
+      - go/test: # Runs 'go test ./...' but includes extensive parameterization for finer tuning.
+          covermode: atomic
+          failfast: true
+          race: true
+
 workflows:
-  say-hello-workflow:
+  # Below is the definition of your workflow.
+  # Inside the workflow, you provide the jobs you want to run, e.g this workflow runs the build-and-test job above.
+  # CircleCI will run this workflow on every commit.
+  # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/configuration-reference/#workflows
+  sample:
     jobs:
-      - say-hello
+      - build-and-test
