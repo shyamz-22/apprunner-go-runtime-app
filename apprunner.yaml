@@ -12,7 +12,7 @@ build:
     - name: TABLE_NAME
       value: urls-new
 run:
-  runtime-version: 1.21.0
+  runtime-version: 1.18.10
   command: ./main
   network: 
     port: 8000
