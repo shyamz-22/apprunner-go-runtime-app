@@ -19,7 +19,7 @@ Resources:
       InstanceConfiguration:
         Cpu: 1 vCPU
         Memory: 2 GB
-        InstanceRoleArn: !Ref Role
+        InstanceRoleArn: !GetAtt Role.Arn
 
   Table:
     Type: AWS::DynamoDB::Table
