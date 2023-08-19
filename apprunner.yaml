@@ -2,11 +2,8 @@ version: 1.0
 runtime: go1
 build:
   commands:
-    # pre-build:
-    #   - wget -c https://s3.amazonaws.com/DOC-EXAMPLE-BUCKET/test-lib.tar.gz -O - | tar -xz
     build:
       - go test ./...
-    post-build:
       - go build main.go
   env:
     - name: TABLE_NAME
@@ -15,8 +12,8 @@ run:
   runtime-version: 1.18.10
   command: ./main
   network: 
-    port: 8000
-    env: MY_APP_PORT  
+    port: 8080
+    env: MY_APP_PORT
   env:
     - name: TABLE_NAME
       value: urls-new
