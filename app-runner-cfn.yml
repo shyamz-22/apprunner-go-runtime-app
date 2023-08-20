@@ -8,7 +8,7 @@ Resources:
       SourceConfiguration:
         AuthenticationConfiguration:
           ConnectionArn: "arn:aws:apprunner:eu-west-1:276249782737:connection/appRunnerRepo/90a59472060e42599647b3015dc04459"
-        AutoDeploymentsEnabled: true
+        AutoDeploymentsEnabled: false
         CodeRepository:
           RepositoryUrl: "https://github.com/shyamz-22/apprunner-go-runtime-app"
           SourceCodeVersion:
