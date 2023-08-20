@@ -9,7 +9,7 @@ the CloudFormation Stack
 
 ## Create the CloudFormation Stack
 
-This Stack creates a DynamoDB Table, an AppRunner instance role that can access the Table, and an AppRunner Service
+This [Stack](app-runner-cfn.yml) creates a DynamoDB Table, an AppRunner instance role that can access the Table, and an AppRunner Service
 that deploys the go backend. 
 
 > We have disabled the automatic deployments, so we can control the deployments to the AppRunner Service from CircleCI
@@ -32,8 +32,8 @@ that deploys the go backend.
 
 Read [Continuous Integration with CircleCI] for setting up the continuous integration for this project
 
-### Create CircleCI Deployer Role
-This role has permission only to start deployment and read only permissions for listing services and operations.
+### Create CircleCI Deployer User
+This [user](app-runner-deployer-cfn.yml) has an attached policy with permission only to start deployment and read only permissions for listing services and operations.
 
 ```bash
 > # Make sure you have configure aws cli through `aws configure` with proper credentials
