@@ -3,6 +3,8 @@ version: 2.1
 orbs:
   go: circleci/go@1.7.3
   aws-cli: circleci/aws-cli@4.0.0
+  queue: eddiewebb/queue@2.2.1
+
 
 jobs:
   test:
@@ -33,7 +35,12 @@ jobs:
 workflows:
   sample:
     jobs:
-      - test
+      - queue/block_workflow:
+            only-on-branch: master
+            time: '10'
+      - test:
+          requires:
+            - queue/block_workflow
       - deploy:
           requires:
             - test
