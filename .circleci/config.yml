@@ -26,9 +26,9 @@ jobs:
       - checkout
       - aws-cli/setup
       - run:
-          name: Deploy pyg demo to app runner service
+          name: Deploy go app to AWS App Runner service
           command: |
-              ./deploy.sh $AWS_APPRUNNER_SERVICE_ARN
+            ./deploy.sh $AWS_APPRUNNER_SERVICE_ARN
 
 workflows:
   sample:

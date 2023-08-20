@@ -26,7 +26,7 @@ that deploys the go backend.
       --template-file app-runner-cfn.yml \
       --capabilities CAPABILITY_IAM \
       --disable-rollback \
-      ----parameter-overrides ServiceARN=$CONNECTION_ARN \
+      --parameter-overrides GitHubConnectionArn=$CONNECTION_ARN \
                    GitHubRepository=$REPOSITORY_URL \
                    AppRunnerServiceName=$APPRUNNER_SERVICE_NAME
 ```
@@ -37,6 +37,9 @@ Read [Continuous Integration with CircleCI] for setting up the continuous integr
 
 ### Create CircleCI Deployer User
 This [user](app-runner-deployer-cfn.yml) has an attached policy with permission only to start deployment and read only permissions for listing services and operations.
+
+> [!NOTE]
+> You can deploy this stack while the App Runner Service is being created
 
 ```bash
 > # Make sure you have configure aws cli through `aws configure` with proper credentials
