@@ -78,5 +78,28 @@ Next Steps:
 - Custom Domains
 - Observability
 
+
+## Testing the Go app
+
+This app generates short codes for a given url, and when referenced via the short code redirects to the page.
+
+```bash
+> export APPRUNNER_SERVICE_ARN="arn:aws:apprunner:eu-west-1:XXX:service/xxx/xxx" # <- Copy this from service created above
+> export APP_URL=https://$(aws apprunner describe-service --service-arn $APPRUNNER_SERVICE_ARN --output text --query Service.ServiceUrl)/app/
+> curl -X POST \
+       -d 'https://dev.to/shyamala_u/the-case-of-disappearing-metrics-in-kubernetes-1kdh' \
+      $APP_URL
+# {"ShortCode":"a19e9737"}
+> echo $APP_URL
+> curl -i https://3caejybwih.eu-west-1.awsapprunner.com/app/a19e9737
+HTTP/1.1 302 Found
+content-length: 0
+date: Sun, 20 Aug 2023 21:18:01 GMT
+location: https://dev.to/shyamala_u/the-case-of-disappearing-metrics-in-kubernetes-1kdh # <- Redirected to the page
+x-envoy-upstream-service-time: 4
+server: envoy
+```
+
+
 [Github Connections]: https://eu-west-1.console.aws.amazon.com/apprunner/home?region=eu-west-1#/connections
 [Continuous Integration with CircleCI]: https://circleci.com/blog/setting-up-continuous-integration-with-github/
