@@ -1,5 +1,12 @@
 # Basic Setup of a Go application in AWS APP Runner
 
+ - [Create a GitHub connection](#create-a-github-connection)
+ - [Deploy App Runner Service](#deploy-app-runner-service)
+ - [Setup CircleCI](#setup-circleci)
+   + [Create CircleCI Deployer User](#create-circleci-deployer-user)
+ - [Testing the deployed App](#testing-the-deployed-app)
+ - [Next Steps:](#next-steps)
+
 ## Create a GitHub connection
 
 Go to AppRunner [Github Connections] and create a new connection. You will need the `ARN` of this resource for setting up
@@ -8,7 +15,7 @@ the CloudFormation Stack
 > [!IMPORTANT]  
 > Make sure your connection has access only to specific repositories
 
-## Create the CloudFormation Stack
+## Deploy App Runner Service
 
 This [Stack](app-runner-cfn.yml) creates a DynamoDB Table, an AppRunner instance role that can access the Table, and an AppRunner Service
 that deploys the go backend. 
@@ -78,13 +85,7 @@ Now set up following environment variables for the project in CircleCI
 🥳💃💃🥳 Awesome you have made it till here. You are all set now. With every push to this git repository
 CI will run the test and when the test is successful the app is deployed to AWS App Runner.
 
-
-## Next Steps:
-- Custom Domains
-- Observability
-
-
-## Testing the Go app
+## Testing the deployed App
 
 This app generates short codes for a given url, and when referenced via the short code redirects to the page.
 
@@ -104,6 +105,11 @@ location: https://dev.to/shyamala_u/the-case-of-disappearing-metrics-in-kubernet
 x-envoy-upstream-service-time: 4
 server: envoy
 ```
+
+## Next Steps:
+- Custom Domains
+- Observability
+
 
 [Github Connections]: https://eu-west-1.console.aws.amazon.com/apprunner/home?region=eu-west-1#/connections
 [Continuous Integration with CircleCI]: https://circleci.com/blog/setting-up-continuous-integration-with-github/
