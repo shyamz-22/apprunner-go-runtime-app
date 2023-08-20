@@ -34,7 +34,7 @@ jobs:
     steps:
       - checkout
       - aws-cli/setup
-      - run: |
+      - run: >-
           aws apprunner list-services
           ls -lah
           exit 0
@@ -48,4 +48,6 @@ workflows:
   sample:
     jobs:
       - test
-      - deploy
+      - deploy:
+          requires:
+            - test
