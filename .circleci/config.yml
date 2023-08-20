@@ -36,6 +36,8 @@ jobs:
       - aws-cli/setup
       - run: >-
           aws apprunner list-services
+          ls -lah
+          exit 0
          
           
 workflows:
