@@ -91,7 +91,7 @@ This app generates short codes for a given url, and when referenced via the shor
       $APP_URL
 # {"ShortCode":"a19e9737"}
 > echo $APP_URL
-> curl -i https://3caejybwih.eu-west-1.awsapprunner.com/app/a19e9737
+> curl -i https://xxx.yyy.awsapprunner.com/app/a19e9737
 HTTP/1.1 302 Found
 content-length: 0
 date: Sun, 20 Aug 2023 21:18:01 GMT
