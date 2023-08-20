@@ -19,13 +19,13 @@ that deploys the go backend.
 > export CONNECTION_ARN="arn:aws:apprunner:eu-west-1:xxxx:connection/xxx/xxx" # <- Copy this from connection created above
 > export REPOSITORY_URL="https://github.com/shyamz-22/apprunner-go-runtime-app"
 > export APPRUNNER_SERVICE_NAME="apprunner-go-demo"
-> aws deploy aws cloudformation deploy
-             --stack-name apprunner-demo-stack \
-             --template-body app-runner-cfn.yml \
-             --capabilities CAPABILITY_IAM \
-             --parameters ParameterKey=ServiceARN,ParameterValue=$CONNECTION_ARN \
-                          ParameterKey=GitHubRepository,ParameterValue=$REPOSITORY_URL \
-                          ParameterKey=AppRunnerServiceName,ParameterValue=$APPRUNNER_SERVICE_NAME
+> aws cloudformation deploy
+      --stack-name apprunner-demo-stack \
+      --template-body app-runner-cfn.yml \
+      --capabilities CAPABILITY_IAM \
+      --parameters ParameterKey=ServiceARN,ParameterValue=$CONNECTION_ARN \
+                   ParameterKey=GitHubRepository,ParameterValue=$REPOSITORY_URL \
+                   ParameterKey=AppRunnerServiceName,ParameterValue=$APPRUNNER_SERVICE_NAME
 ```
 
 ## Setup CircleCI
@@ -38,11 +38,11 @@ This [user](app-runner-deployer-cfn.yml) has an attached policy with permission 
 ```bash
 > # Make sure you have configure aws cli through `aws configure` with proper credentials
 > export APPRUNNER_SERVICE_ARN="arn:aws:apprunner:eu-west-1:XXX:service/xxx/xxx" # <- Copy this from service created above
-> aws deploy aws cloudformation deploy
-             --stack-name apprunner-demo-ci-stack \
-             --template-body app-runner-deployer-cfn.yml \
-             --capabilities CAPABILITY_IAM \
-             --parameters ParameterKey=AppRunnerServiceArn,ParameterValue=$APPRUNNER_SERVICE_ARN
+> aws cloudformation deploy
+       --stack-name apprunner-demo-ci-stack \
+       --template-body app-runner-deployer-cfn.yml \
+       --capabilities CAPABILITY_IAM \
+       --parameters ParameterKey=AppRunnerServiceArn,ParameterValue=$APPRUNNER_SERVICE_ARN
 > aws iam create-access-key --user-name CIDeployer
 {
     "AccessKey": {
