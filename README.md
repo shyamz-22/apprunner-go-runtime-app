@@ -35,6 +35,10 @@ that deploys the go backend.
 
 Read [Continuous Integration with CircleCI] for setting up the continuous integration for this project
 
+> [!Warning]
+> We use [eddiewebb/queue@2.2.1] orb for queuing workflows.
+> To enable this you have to allow third party uncertified orbs in `Organization Settings > Security`
+
 ### Create CircleCI Deployer User
 This [user](app-runner-deployer-cfn.yml) has an attached policy with permission only to start deployment and read only permissions for listing services and operations.
 
@@ -74,7 +78,8 @@ Now set up following environment variables for the project in CircleCI
 🥳💃💃🥳 Awesome you have made it till here. You are all set now. With every push to this git repository
 CI will run the test and when the test is successful the app is deployed to AWS App Runner.
 
-Next Steps:
+
+## Next Steps:
 - Custom Domains
 - Observability
 
@@ -102,3 +107,4 @@ server: envoy
 
 [Github Connections]: https://eu-west-1.console.aws.amazon.com/apprunner/home?region=eu-west-1#/connections
 [Continuous Integration with CircleCI]: https://circleci.com/blog/setting-up-continuous-integration-with-github/
+[eddiewebb/queue@2.2.1]:https://circleci.com/developer/orbs/orb/eddiewebb/queue?version=2.2.1#usage-queue_workflow
