@@ -1,0 +1,39 @@
+version: 2.1
+
+orbs:
+  go: circleci/go@1.7.3
+  aws-cli: circleci/aws-cli@4.0.0
+
+jobs:
+  test:
+    docker:
+      - image: cimg/go:1.19.2
+        environment:
+          TABLE_NAME: urls-new
+    steps:
+      # Checkout the code as the first step.
+      - checkout
+      - go/load-cache # Load cached Go modules.
+      - go/mod-download # Run 'go mod download'.
+      - go/save-cache # Save Go modules to cache.
+      - go/test: # Runs 'go test ./...' but includes extensive parameterization for finer tuning.
+          covermode: atomic
+          failfast: true
+          race: true
+  deploy:
+    executor: aws-cli/default
+    steps:
+      - checkout
+      - aws-cli/setup
+      - run:
+          name: Deploy pyg demo to app runner service
+          command: |
+              ./deploy.sh $AWS_APPRUNNER_SERVICE_ARN
+
+workflows:
+  sample:
+    jobs:
+      - test
+      - deploy:
+          requires:
+            - test

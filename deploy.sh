@@ -1,10 +1,10 @@
 #!/bin/bash
-set -ex
+set -e
 
 service_arn="$1"
 deployment_command="aws apprunner start-deployment --service-arn $service_arn --query OperationId --output text"
 list_operations_command="aws apprunner list-operations --service-arn $service_arn"
-timeout_seconds=1800  # Adjust the timeout duration as needed (e.g., 1800 seconds = 30 minutes)
+timeout_seconds=900  # Adjust the timeout duration as needed (e.g., 900 seconds = 15 minutes)
 aws_profile="$2"  # Optional AWS profile parameter
 
 if [[ -z "$service_arn" ]]; then
