@@ -8,6 +8,8 @@ Resources:
     Type: 'AWS::IAM::User'
     Properties:
       UserName: CIDeployer
+      ManagedPolicyArns:
+          - !Ref AppRunnerDeploymentPolicy
 
   AppRunnerDeploymentPolicy:
     Type: 'AWS::IAM::ManagedPolicy'
@@ -33,10 +35,3 @@ Resources:
             Effect: Allow
             Action: 'apprunner:ListServices'
             Resource: '*'
-
-  CIDeployerUserPolicyAttachment:
-    Type: 'AWS::IAM::PolicyAttachment'
-    Properties:
-      PolicyArn: !Ref AppRunnerDeploymentPolicy
-      Users:
-        - !Ref CIDeployerUser

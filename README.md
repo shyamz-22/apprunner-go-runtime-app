@@ -5,6 +5,7 @@
 Go to AppRunner [Github Connections] and create a new connection. You will need the `ARN` of this resource for setting up
 the CloudFormation Stack
 
+> [!IMPORTANT]  
 > Make sure your connection has access only to specific repositories
 
 ## Create the CloudFormation Stack
@@ -12,6 +13,7 @@ the CloudFormation Stack
 This [Stack](app-runner-cfn.yml) creates a DynamoDB Table, an AppRunner instance role that can access the Table, and an AppRunner Service
 that deploys the go backend. 
 
+> [!NOTE]  
 > We have disabled the automatic deployments, so we can control the deployments to the AppRunner Service from CircleCI
 
 ```bash
@@ -19,13 +21,14 @@ that deploys the go backend.
 > export CONNECTION_ARN="arn:aws:apprunner:eu-west-1:xxxx:connection/xxx/xxx" # <- Copy this from connection created above
 > export REPOSITORY_URL="https://github.com/shyamz-22/apprunner-go-runtime-app"
 > export APPRUNNER_SERVICE_NAME="apprunner-go-demo"
-> aws cloudformation deploy
+> aws cloudformation deploy \
       --stack-name apprunner-demo-stack \
-      --template-body app-runner-cfn.yml \
+      --template-file app-runner-cfn.yml \
       --capabilities CAPABILITY_IAM \
-      --parameters ParameterKey=ServiceARN,ParameterValue=$CONNECTION_ARN \
-                   ParameterKey=GitHubRepository,ParameterValue=$REPOSITORY_URL \
-                   ParameterKey=AppRunnerServiceName,ParameterValue=$APPRUNNER_SERVICE_NAME
+      --disable-rollback \
+      ----parameter-overrides ServiceARN=$CONNECTION_ARN \
+                   GitHubRepository=$REPOSITORY_URL \
+                   AppRunnerServiceName=$APPRUNNER_SERVICE_NAME
 ```
 
 ## Setup CircleCI
@@ -38,22 +41,26 @@ This [user](app-runner-deployer-cfn.yml) has an attached policy with permission 
 ```bash
 > # Make sure you have configure aws cli through `aws configure` with proper credentials
 > export APPRUNNER_SERVICE_ARN="arn:aws:apprunner:eu-west-1:XXX:service/xxx/xxx" # <- Copy this from service created above
-> aws cloudformation deploy
+> aws cloudformation deploy \
        --stack-name apprunner-demo-ci-stack \
-       --template-body app-runner-deployer-cfn.yml \
-       --capabilities CAPABILITY_IAM \
-       --parameters ParameterKey=AppRunnerServiceArn,ParameterValue=$APPRUNNER_SERVICE_ARN
+       --template-file app-runner-deployer-cfn.yml \
+       --capabilities CAPABILITY_NAMED_IAM \
+       --disable-rollback \
+       --parameter-overrides AppRunnerServiceArn=$APPRUNNER_SERVICE_ARN
 > aws iam create-access-key --user-name CIDeployer
-{
-    "AccessKey": {
-        "UserName": "username",
-        "AccessKeyId": "YOUR_ACCESS_KEY_ID",
-        "Status": "Active",
-        "SecretAccessKey": "YOUR_SECRET_ACCESS_KEY",
-        "CreateDate": "YYYY-MM-DDTHH:MM:SSZ"
-    }
-}
+#{
+#    "AccessKey": {
+#        "UserName": "username",
+#        "AccessKeyId": "YOUR_ACCESS_KEY_ID",
+#        "Status": "Active",
+#        "SecretAccessKey": "YOUR_SECRET_ACCESS_KEY",
+#        "CreateDate": "YYYY-MM-DDTHH:MM:SSZ"
+#    }
+#}
 ```
+> [!WARNING]  
+> Before deleting the stack make sure to deactivate and delete all associated security credentials
+
 Now set up following environment variables for the project in CircleCI
 
 - AWS_ACCESS_KEY_ID
