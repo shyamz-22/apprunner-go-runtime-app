@@ -26,11 +26,17 @@ jobs:
     executor: aws-cli/default
     steps:
       - checkout
-      - aws-cli/setup
+      - aws-cli/setup:
+          role-arn: ${AWS_ROLE_ARN}
+          aws-region: ${AWS_REGION}
+          # optional parameters
+          profile-name: "app-runner-profile"
+          role-session-name: "app_runner_session"
+          session-duration: "1800"
       - run:
           name: Deploy go app to AWS App Runner service
           command: |
-            ./deploy.sh $AWS_APPRUNNER_SERVICE_ARN
+            ./deploy.sh $AWS_APPRUNNER_SERVICE_ARN app-runner-profile
 
 workflows:
   sample:
@@ -44,3 +50,5 @@ workflows:
       - deploy:
           requires:
             - test
+          context:
+            - aws
