@@ -29,7 +29,6 @@ jobs:
       - aws-cli/setup:
           role_arn: ${AWS_ROLE_ARN}
           profile_name: "app-runner-profile"
-          role_session_name: "app_runner_session"
           session_duration: "1800"
       - run:
           name: Deploy go app to AWS App Runner service
