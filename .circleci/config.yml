@@ -28,8 +28,6 @@ jobs:
       - checkout
       - aws-cli/setup:
           role_arn: ${AWS_ROLE_ARN}
-          aws_region: ${AWS_REGION}
-          # optional parameters
           profile_name: "app-runner-profile"
           role_session_name: "app_runner_session"
           session_duration: "1800"
