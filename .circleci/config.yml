@@ -33,6 +33,7 @@ jobs:
       - run:
           name: Deploy go app to AWS App Runner service
           command: |
+            ls -lah
             ./deploy.sh $AWS_APPRUNNER_SERVICE_ARN app-runner-profile
 
 workflows:
