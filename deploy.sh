@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 service_arn="$1"
 deployment_command="aws apprunner start-deployment --service-arn $service_arn --query OperationId --output text"
