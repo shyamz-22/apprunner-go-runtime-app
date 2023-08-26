@@ -65,9 +65,10 @@ This [user](app-runner-deployer-cfn.yml) has an attached policy with permission 
 
 
 ```
-Now set up following environment variables for the project in CircleCI
+Now create a context named `aws` in organization settings and set up following environment variables for the project in CircleCI
 
-- AWS_APPRUNNER_ROLE_ARN (output of the stack above)
+- AWS_APPRUNNER_ROLE_ARN (output of the ci stack above)
+- AWS_APPRUNNER_SERVICE_ARN (App runner service ARN)
 - AWS_REGION (eu-west-1)
 
 🥳💃💃🥳 Awesome you have made it till here. You are all set now. With every push to this git repository
