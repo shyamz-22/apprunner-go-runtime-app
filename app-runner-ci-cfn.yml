@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template for creating OIDC Identity Provider and IAM Role
+
+Parameters:
+  AppRunnerServiceArn:
+    Type: String
+    Description: ARN of the service resource
+  OrgID:
+    Type: String
+    Description: CircleCI Organization ID
+
+Resources:
+  OpenIDConnectProvider:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      Url: !Join ["", [ "https://oidc.circleci.com/org/", !Ref OrgID]]
+      ClientIdList: [!Ref OrgID]
+      ThumbprintList: ["9e99a48a9960b14926bb7f3b02e22da2b0ab7280"] # <- obtain thumbrint for oidc.circleci.com follow https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc_verify-thumbprint.html
+      Tags: []
+
+  IdentityRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !GetAtt OpenIDConnectProvider.Arn
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                "oidc.circleci.com/org/ORG_ID:aud" : !Ref OrgID
+      Policies:
+        - PolicyName: AppRunnerServicePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: VisualEditor0
+                Effect: Allow
+                Action:
+                  - apprunner:PauseService
+                  - apprunner:UntagResource
+                  - apprunner:DescribeService
+                  - apprunner:ResumeService
+                  - apprunner:ListTagsForResource
+                  - apprunner:DescribeOperation
+                  - apprunner:ListOperations
+                  - apprunner:StartDeployment
+                  - apprunner:TagResource
+                Resource: !Ref AppRunnerServiceArn
+              - Sid: VisualEditor1
+                Effect: Allow
+                Action: apprunner:ListServices
+                Resource: "*"
+Outputs:
+  IdentityRoleArn:
+    Description: ARN of the IAM role created for CI
+    Value: !GetAtt IdentityRole.Arn

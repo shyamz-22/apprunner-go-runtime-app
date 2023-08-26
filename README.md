@@ -29,13 +29,11 @@ that deploys the go backend.
 > export REPOSITORY_URL="https://github.com/shyamz-22/apprunner-go-runtime-app"
 > export APPRUNNER_SERVICE_NAME="apprunner-go-demo"
 > aws cloudformation deploy \
-      --stack-name apprunner-demo-stack \
-      --template-file app-runner-cfn.yml \
-      --capabilities CAPABILITY_IAM \
-      --disable-rollback \
-      --parameter-overrides GitHubConnectionArn=$CONNECTION_ARN \
-                   GitHubRepository=$REPOSITORY_URL \
-                   AppRunnerServiceName=$APPRUNNER_SERVICE_NAME
+  --stack-name apprunner-demo-stack \
+  --template-file app-runner-cfn.yml \
+  --capabilities CAPABILITY_IAM \
+  --disable-rollback \
+  --parameter-overrides GitHubConnectionArn=$CONNECTION_ARN GitHubRepository=$REPOSITORY_URL AppRunnerServiceName=$APPRUNNER_SERVICE_NAME
 ```
 
 ## Setup CircleCI
@@ -55,32 +53,22 @@ This [user](app-runner-deployer-cfn.yml) has an attached policy with permission 
 ```bash
 > # Make sure you have configure aws cli through `aws configure` with proper credentials
 > export APPRUNNER_SERVICE_ARN="arn:aws:apprunner:eu-west-1:XXX:service/xxx/xxx" # <- Copy this from service created above
+> export CIRCLE_CI_OPENID_ORGID="xxx-xxx-xxx"  # you can find this in your CircleCI organization settings
+>  TMP_TEMPLATE_FILE=$(mktemp) && \
+   sed "s/ORG_ID/$CIRCLE_CI_OPENID_ORGID/g" app-runner-ci-cfn.yml > "$TMP_TEMPLATE_FILE" 
 > aws cloudformation deploy \
-       --stack-name apprunner-demo-ci-stack \
-       --template-file app-runner-deployer-cfn.yml \
-       --capabilities CAPABILITY_NAMED_IAM \
-       --disable-rollback \
-       --parameter-overrides AppRunnerServiceArn=$APPRUNNER_SERVICE_ARN
-> aws iam create-access-key --user-name CIDeployer
-#{
-#    "AccessKey": {
-#        "UserName": "username",
-#        "AccessKeyId": "YOUR_ACCESS_KEY_ID",
-#        "Status": "Active",
-#        "SecretAccessKey": "YOUR_SECRET_ACCESS_KEY",
-#        "CreateDate": "YYYY-MM-DDTHH:MM:SSZ"
-#    }
-#}
-```
-> [!WARNING]  
-> Before deleting the stack make sure to deactivate and delete all associated security credentials
+ --template-file $TMP_TEMPLATE_FILE \
+ --stack-name apprunner-demo-ci-stack \
+ --disable-rollback \
+ --capabilities CAPABILITY_NAMED_IAM \
+ --parameter-overrides AppRunnerServiceArn=$APPRUNNER_SERVICE_ARN OrgID=$CIRCLE_CI_OPENID_ORGID && rm $TMP_TEMPLATE_FILE 
 
+
+```
 Now set up following environment variables for the project in CircleCI
 
-- AWS_ACCESS_KEY_ID
-- AWS_SECRET_ACCESS
 - AWS_APPRUNNER_SERVICE_ARN
-- AWS_REGION
+- AWS_ROLE_ARN
 
 🥳💃💃🥳 Awesome you have made it till here. You are all set now. With every push to this git repository
 CI will run the test and when the test is successful the app is deployed to AWS App Runner.
@@ -105,6 +93,14 @@ location: https://dev.to/shyamala_u/the-case-of-disappearing-metrics-in-kubernet
 x-envoy-upstream-service-time: 4
 server: envoy
 ```
+
+## Clean up 
+
+```bash
+> aws cloudformation delete-stack --stack-name apprunner-demo-stack
+> aws cloudformation delete-stack --stack-name apprunner-demo-ci-stack
+```
+
 
 ## Next Steps:
 - Custom Domains
