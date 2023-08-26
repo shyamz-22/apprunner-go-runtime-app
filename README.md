@@ -9,7 +9,7 @@
 
 ## Create a GitHub connection
 
-Go to AppRunner [Github Connections] and create a new connection. You will need the `ARN` of this resource for setting up
+Go to AppRunner [Connected Accounts] and create a new connection. You will need the `ARN` of this resource for setting up
 the CloudFormation Stack
 
 > [!IMPORTANT]  
