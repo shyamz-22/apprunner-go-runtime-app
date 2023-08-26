@@ -27,7 +27,7 @@ jobs:
     steps:
       - checkout
       - aws-cli/setup:
-          role_arn: ${AWS_ROLE_ARN}
+          role_arn: ${AWS_APPRUNNER_ROLE_ARN}
           profile_name: "app-runner-profile"
           session_duration: "1800"
       - run:

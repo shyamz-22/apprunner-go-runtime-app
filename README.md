@@ -48,7 +48,7 @@ Read [Continuous Integration with CircleCI] for setting up the continuous integr
 This [user](app-runner-deployer-cfn.yml) has an attached policy with permission only to start deployment and read only permissions for listing services and operations.
 
 > [!NOTE]
-> You can deploy this stack while the App Runner Service is being created
+> You can deploy this stack while the App Runner Service is being created. You only need the Service ARN
 
 ```bash
 > # Make sure you have configure aws cli through `aws configure` with proper credentials
@@ -67,8 +67,8 @@ This [user](app-runner-deployer-cfn.yml) has an attached policy with permission 
 ```
 Now set up following environment variables for the project in CircleCI
 
-- AWS_APPRUNNER_SERVICE_ARN
-- AWS_ROLE_ARN
+- AWS_APPRUNNER_ROLE_ARN (output of the stack above)
+- AWS_REGION (eu-west-1)
 
 🥳💃💃🥳 Awesome you have made it till here. You are all set now. With every push to this git repository
 CI will run the test and when the test is successful the app is deployed to AWS App Runner.
