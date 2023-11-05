@@ -5,6 +5,7 @@
  - [Setup CircleCI](#setup-circleci)
    + [Create CircleCI Deployer User](#create-circleci-deployer-user)
  - [Testing the deployed App](#testing-the-deployed-app)
+ - [Cleanup](#cleanup-)
  - [Next Steps:](#next-steps)
 
 ## Create a GitHub connection
@@ -44,8 +45,8 @@ Read [Continuous Integration with CircleCI] for setting up the continuous integr
 > We use [eddiewebb/queue@2.2.1] orb for queuing workflows.
 > To enable this you have to allow third party uncertified orbs in `Organization Settings > Security`
 
-### Create CircleCI Deployer User
-This [user](app-runner-deployer-cfn.yml) has an attached policy with permission only to start deployment and read only permissions for listing services and operations.
+### Create CircleCI Deployer Role
+This [Role](app-runner-ci-cfn.yml) has an attached policy with permission only to start deployment and read only permissions for listing services and operations.
 
 > [!NOTE]
 > You can deploy this stack while the App Runner Service is being created. You only need the Service ARN
@@ -95,7 +96,7 @@ x-envoy-upstream-service-time: 4
 server: envoy
 ```
 
-## Clean up 
+## Cleanup
 
 ```bash
 > aws cloudformation delete-stack --stack-name apprunner-demo-stack
@@ -108,6 +109,6 @@ server: envoy
 - Observability
 
 
-[Github Connections]: https://eu-west-1.console.aws.amazon.com/apprunner/home?region=eu-west-1#/connections
+[Connected Accounts]: https://eu-west-1.console.aws.amazon.com/apprunner/home?region=eu-west-1#/connections
 [Continuous Integration with CircleCI]: https://circleci.com/blog/setting-up-continuous-integration-with-github/
 [eddiewebb/queue@2.2.1]:https://circleci.com/developer/orbs/orb/eddiewebb/queue?version=2.2.1#usage-queue_workflow
