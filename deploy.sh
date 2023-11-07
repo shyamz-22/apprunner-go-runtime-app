@@ -36,7 +36,7 @@ function display_progress {
 }
 
 start_time=$(date +%s)
-finish_time=$(start_time + timeout_seconds)
+finish_time=$((start_time + timeout_seconds))
 
 while true; do
     current_time=$(date +%s)
