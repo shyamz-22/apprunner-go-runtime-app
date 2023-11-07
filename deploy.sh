@@ -36,25 +36,23 @@ function display_progress {
 }
 
 start_time=$(date +%s)
-finish_time=$((start_time + timeout_seconds))
 
 while true; do
     current_time=$(date +%s)
     elapsed_time=$((current_time - start_time))
 
     if [[ $elapsed_time -ge $timeout_seconds ]]; then
-        display_progress "$finish_time"
         echo -e "\nTimeout reached. Operation did not complete within $timeout_seconds seconds."
         exit 2
     fi
 
     operation_status=$($list_operations_command --query "OperationSummaryList[?Id == '$operation_id'].Status" --output text)
     if [[ $operation_status == "SUCCEEDED" ]]; then
-        display_progress "$finish_time"
+        display_progress "$timeout_seconds"
         echo -e "\nDeployment operation $operation_id has succeeded"
         exit 0
     elif [[ $operation_status == "FAILED" ]]; then
-        display_progress "$finish_time"
+        display_progress "$timeout_seconds"
         echo -e "\nDeployment operation $operation_id has failed"
         exit 2
     fi
