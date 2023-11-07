@@ -45,9 +45,8 @@ Resources:
         - AttributeName: shortcode
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
-      # TimeToLiveSpecification:
-      #   AttributeName: ttl
-      #   Enabled: true
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
   
   Role:
     Type: AWS::IAM::Role
@@ -84,3 +83,6 @@ Outputs:
   TableName:
     Description: DynamoDB table name
     Value: !Ref Table
+  GoAppRunnerServiceArn:
+    Description: The ARN of the App Runner service.
+    Value: !GetAtt GoAppRunner.ServiceArn
