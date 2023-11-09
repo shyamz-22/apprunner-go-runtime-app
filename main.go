@@ -55,7 +55,7 @@ func (us *UrlShortener) createShortCode(rw http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	rw.WriteHeader(http.StatusCreated)
+	//rw.WriteHeader(http.StatusCreated)
 	err = json.NewEncoder(rw).Encode(CreateShortCodeResponse{ShortCode: shortCode})
 	if err != nil {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
