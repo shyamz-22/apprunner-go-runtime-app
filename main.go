@@ -44,12 +44,12 @@ func createShortCode(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	rw.WriteHeader(http.StatusCreated)
 	err = json.NewEncoder(rw).Encode(CreateShortCodeResponse{ShortCode: shortCode})
 	if err != nil {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rw.WriteHeader(http.StatusCreated)
 	log.Println("short code for", url, shortCode)
 }
 
