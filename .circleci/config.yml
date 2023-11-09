@@ -11,8 +11,7 @@ jobs:
     docker:
       - image: cimg/go:1.19.2
         environment:
-          TABLE_NAME: urls-new
-          AWS_REGION: eu-west-1
+          TABLE_NAME: test-url-db
     steps:
       # Checkout the code as the first step.
       - checkout

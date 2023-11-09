@@ -14,19 +14,30 @@ import (
 
 func main() {
 	router := mux.NewRouter()
+	urlShortener := NewUrlShortener(db.NewUrlShortenerDB())
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		log.Println("root url accessed", time.Now().Local().UTC())
 	}).Methods(http.MethodGet)
 
-	router.HandleFunc("/app/", createShortCode).Methods(http.MethodPost)
-	router.HandleFunc("/app/{shortcode}", accessURLWithShortCode).Methods(http.MethodGet)
+	router.HandleFunc("/app/", urlShortener.createShortCode).Methods(http.MethodPost)
+	router.HandleFunc("/app/{shortcode}", urlShortener.accessURLWithShortCode).Methods(http.MethodGet)
 
 	log.Println("starting server.....")
 	http.ListenAndServe(":8080", router)
 }
 
-func createShortCode(rw http.ResponseWriter, req *http.Request) {
+type UrlShortener struct {
+	db db.DB
+}
+
+func NewUrlShortener(db db.DB) *UrlShortener {
+	return &UrlShortener{
+		db: db,
+	}
+}
+
+func (us *UrlShortener) createShortCode(rw http.ResponseWriter, req *http.Request) {
 	b, err := io.ReadAll(req.Body)
 	if err != nil {
 		http.Error(rw, err.Error(), http.StatusBadRequest)
@@ -38,7 +49,7 @@ func createShortCode(rw http.ResponseWriter, req *http.Request) {
 	url := string(b)
 	log.Println("URL", url)
 
-	shortCode, err := db.SaveURL(url)
+	shortCode, err := us.db.SaveURL(url)
 	if err != nil {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 		return
@@ -57,10 +68,10 @@ type CreateShortCodeResponse struct {
 	ShortCode string
 }
 
-func accessURLWithShortCode(rw http.ResponseWriter, req *http.Request) {
+func (us *UrlShortener) accessURLWithShortCode(rw http.ResponseWriter, req *http.Request) {
 	shortCode := mux.Vars(req)["shortcode"]
 
-	url, err := db.GetLongURL(shortCode)
+	url, err := us.db.GetLongURL(shortCode)
 
 	if err != nil {
 		if errors.Is(err, db.ErrUrlNotFound) {

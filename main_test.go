@@ -13,10 +13,22 @@ import (
 	"github.com/gorilla/mux"
 )
 
+type MockDB struct {
+}
+
+func (db *MockDB) SaveURL(longurl string) (string, error) {
+	return "abcdef1234", nil
+}
+
+func (db *MockDB) GetLongURL(shortCode string) (string, error) {
+	return "https://example.com", nil
+}
+
 func TestCreateShortCode(t *testing.T) {
 	// Setup the router
 	router := mux.NewRouter()
-	router.HandleFunc("/app/", createShortCode).Methods(http.MethodPost)
+	server := NewUrlShortener(&MockDB{})
+	router.HandleFunc("/app/", server.createShortCode).Methods(http.MethodPost)
 
 	// When: create request to create a short code
 	req, err := http.NewRequest(http.MethodPost, "/app/", nil)
@@ -56,7 +68,9 @@ func TestAccessURLWithShortCode(t *testing.T) {
 
 	// When: Access Url with short code
 	router := mux.NewRouter()
-	router.HandleFunc("/app/{shortcode}", accessURLWithShortCode).Methods(http.MethodGet)
+	server := NewUrlShortener(&MockDB{})
+
+	router.HandleFunc("/app/{shortcode}", server.accessURLWithShortCode).Methods(http.MethodGet)
 
 	// Make a request to access the URL
 	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("/app/%s", shortcode), nil)
@@ -84,7 +98,9 @@ func TestAccessURLWithShortCode(t *testing.T) {
 
 func createShortenedUrl() string {
 	router := mux.NewRouter()
-	router.HandleFunc("/app/", createShortCode).Methods(http.MethodPost)
+	server := NewUrlShortener(&MockDB{})
+
+	router.HandleFunc("/app/", server.createShortCode).Methods(http.MethodPost)
 
 	// Make a request to create a short code
 	req, _ := http.NewRequest(http.MethodPost, "/app/", nil)
