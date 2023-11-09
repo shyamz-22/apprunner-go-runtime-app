@@ -32,7 +32,9 @@ func TestCreateShortCode(t *testing.T) {
 
 	// Then: validate status code
 	if rw.Code != http.StatusCreated {
-		t.Errorf("expected status code %d, got %d", http.StatusCreated, rw.Code)
+		body := string(rw.Body.Bytes())
+		t.Errorf("expected status code %d, got %d\nerror: %s", http.StatusCreated, rw.Code, body)
+		t.Fail()
 	}
 
 	// Decode the response body
@@ -68,7 +70,9 @@ func TestAccessURLWithShortCode(t *testing.T) {
 
 	// Then: Validate status code
 	if rw.Code != http.StatusFound {
-		t.Errorf("expected status code %d, got %d", http.StatusFound, rw.Code)
+		body := string(rw.Body.Bytes())
+		t.Errorf("expected status code %d, got %d\nerror:%s", http.StatusFound, rw.Code, body)
+		t.Fail()
 	}
 
 	// Then: Validate the Location header
